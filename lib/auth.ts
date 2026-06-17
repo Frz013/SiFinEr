@@ -47,10 +47,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.refreshToken = token.refreshToken as string
       return session
     },
-    async jwt({ token, account }) {
+    async jwt({ token, account, profile }) {
       if (account) {
         token.accessToken = account.access_token
         token.refreshToken = account.refresh_token
+        // Use Google's sub as the user ID, not Auth.js auto-generated UUID
+        token.sub = account.providerAccountId
       }
       return token
     },

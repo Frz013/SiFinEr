@@ -1,0 +1,67 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e7]:
+      - button "Menu" [ref=e8]:
+        - img [ref=e9]
+      - heading "SiFinEr" [level=1] [ref=e10]
+      - generic [ref=e11]: Tersimpan ✓
+    - complementary [ref=e12]:
+      - generic [ref=e14]:
+        - img "Fer" [ref=e15]
+        - generic [ref=e16]:
+          - paragraph [ref=e17]: Fer
+          - paragraph [ref=e18]: kirigayakazutosatu@gmail.com
+      - navigation [ref=e19]:
+        - button "Dashboard" [ref=e20]:
+          - img [ref=e21]
+          - text: Dashboard
+        - button "Backup" [ref=e23]:
+          - img [ref=e24]
+          - text: Backup
+        - button "Settings" [ref=e27]:
+          - img [ref=e28]
+          - text: Settings
+      - button "Logout" [ref=e32]:
+        - img [ref=e33]
+        - text: Logout
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - paragraph [ref=e41]: Saldo Saat Ini
+            - paragraph [ref=e42]: Rp 0
+            - paragraph [ref=e43]: "Saldo awal: Rp 0"
+          - button "Sembunyikan saldo" [ref=e44]:
+            - img [ref=e45]
+        - generic [ref=e48]:
+          - generic [ref=e49]:
+            - paragraph [ref=e50]: Total Masuk
+            - paragraph [ref=e51]: +Rp 0
+          - generic [ref=e52]:
+            - paragraph [ref=e53]: Total Keluar
+            - paragraph [ref=e54]: "-Rp 0"
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Periode
+            - paragraph [ref=e57]: 30 Hari Terakhir
+        - generic [ref=e58]:
+          - paragraph [ref=e60]: Belum ada data
+          - paragraph [ref=e62]: Belum ada data
+        - generic [ref=e63]:
+          - generic [ref=e64]:
+            - img [ref=e65]
+            - textbox "Cari deskripsi..." [ref=e68]
+          - button "Kategori" [ref=e70]:
+            - text: Kategori
+            - img [ref=e71]
+          - button "30 Hari" [ref=e74]:
+            - text: 30 Hari
+            - img [ref=e75]
+        - generic [ref=e77]:
+          - img [ref=e79]
+          - heading "Belum ada transaksi" [level=3] [ref=e81]
+          - paragraph [ref=e82]: Tap + untuk mulai mencatat keuanganmu.
+        - button "Tambah transaksi" [ref=e83]:
+          - img [ref=e84]
+  - button "Open Next.js Dev Tools" [ref=e90] [cursor=pointer]:
+    - img [ref=e91]
+  - alert [ref=e94]

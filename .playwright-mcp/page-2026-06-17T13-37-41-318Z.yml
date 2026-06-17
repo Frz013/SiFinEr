@@ -1,0 +1,19 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e6]: 💰
+    - heading "SiFinEr" [level=1] [ref=e7]
+    - paragraph [ref=e8]: Simple Finance Tracker
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]: ✦
+      - generic [ref=e12]: Catat pemasukan & pengeluaran dalam klik
+    - generic [ref=e13]:
+      - generic [ref=e14]: ✦
+      - generic [ref=e15]: Lihat visualisasi keuanganmu secara real-time
+    - generic [ref=e16]:
+      - generic [ref=e17]: ✦
+      - generic [ref=e18]: Data aman di cloud & backup ke Google Drive
+  - button "Login dengan Google" [ref=e19]:
+    - img [ref=e20]
+    - text: Login dengan Google
+  - paragraph [ref=e25]: Hanya butuh akun Google. Data kamu aman.
