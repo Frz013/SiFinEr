@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-nb-bg: #FFFDF5;
+  --color-nb-surface: #FFFFFF;
+  --color-nb-border: #000000;
+  --color-nb-primary: #FACC15;
+  --color-nb-primary-hover: #EAB308;
+  --color-nb-income: #4ADE80;
+  --color-nb-income-dark: #16A34A;
+  --color-nb-expense: #F87171;
+  --color-nb-expense-dark: #DC2626;
+  --color-nb-text-secondary: #555555;
+  --color-nb-text-placeholder: #999999;
+
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+body {
+  background: #FFFDF5;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+}
