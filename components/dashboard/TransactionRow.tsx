@@ -1,19 +1,10 @@
 'use client'
 
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Badge from '@/components/ui/Badge'
 import { formatCurrency, formatDateFull } from '@/lib/utils'
-
-interface Transaction {
-  id: number
-  amount: number
-  type: 'income' | 'expense'
-  description: string | null
-  date: number
-  categoryName: string | null
-  categoryColor: string | null
-}
+import type { TransactionWithCategory as Transaction } from '@/types'
 
 interface TransactionRowProps {
   index: number
@@ -24,7 +15,31 @@ interface TransactionRowProps {
 
 export default function TransactionRow({ index, transaction, onEdit, onDelete }: TransactionRowProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 })
+  const btnRef = useRef<HTMLButtonElement>(null)
   const isIncome = transaction.type === 'income'
+
+  useEffect(() => {
+    if (menuOpen && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect()
+      setMenuPos({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      })
+    }
+  }, [menuOpen])
+
+  // Close menu on scroll/resize
+  useEffect(() => {
+    if (!menuOpen) return
+    const close = () => setMenuOpen(false)
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+    }
+  }, [menuOpen])
 
   return (
     <tr className="border-b border-black hover:bg-nb-bg transition-colors last:border-b-0">
@@ -54,8 +69,9 @@ export default function TransactionRow({ index, transaction, onEdit, onDelete }:
       <td className="px-3 py-2.5 text-sm text-nb-text-secondary flex-1">
         {transaction.description || <span className="italic text-nb-text-placeholder">-</span>}
       </td>
-      <td className="px-3 py-2.5 w-12 relative">
+      <td className="px-3 py-2.5 w-12">
         <button
+          ref={btnRef}
           onClick={() => setMenuOpen(!menuOpen)}
           className="w-8 h-8 flex items-center justify-center hover:bg-gray-200 transition-colors"
           aria-label="Menu"
@@ -65,8 +81,11 @@ export default function TransactionRow({ index, transaction, onEdit, onDelete }:
 
         {menuOpen && (
           <>
-            <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-            <div className="absolute right-0 top-full mt-1 z-20 bg-white border-2 border-black shadow-[4px_4px_0px_#000] min-w-[140px]">
+            <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+            <div
+              className="fixed z-50 bg-white border-2 border-black shadow-[4px_4px_0px_#000] min-w-[140px]"
+              style={{ top: menuPos.top, right: menuPos.right }}
+            >
               <button
                 onClick={() => { onEdit(transaction); setMenuOpen(false) }}
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-nb-bg min-h-[44px]"

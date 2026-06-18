@@ -2,16 +2,7 @@
 
 import { useState } from 'react'
 import TransactionRow from './TransactionRow'
-
-interface Transaction {
-  id: number
-  amount: number
-  type: 'income' | 'expense'
-  description: string | null
-  date: number
-  categoryName: string | null
-  categoryColor: string | null
-}
+import type { TransactionWithCategory as Transaction } from '@/types'
 
 interface TransactionTableProps {
   transactions: Transaction[]

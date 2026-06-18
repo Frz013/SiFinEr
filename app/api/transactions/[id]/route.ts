@@ -39,7 +39,25 @@ export async function PUT(
       )
     )
 
-  return NextResponse.json({ success: true })
+  // Fetch updated row with category info
+  const [result] = await db()
+    .select({
+      id: transactions.id,
+      userId: transactions.userId,
+      amount: transactions.amount,
+      type: transactions.type,
+      categoryId: transactions.categoryId,
+      description: transactions.description,
+      date: transactions.date,
+      createdAt: transactions.createdAt,
+      categoryName: categories.name,
+      categoryColor: categories.color,
+    })
+    .from(transactions)
+    .leftJoin(categories, eq(transactions.categoryId, categories.id))
+    .where(eq(transactions.id, Number(id)))
+
+  return NextResponse.json(result)
 }
 
 export async function DELETE(

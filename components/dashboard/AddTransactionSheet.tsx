@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import type { Category, CreateTransactionInput } from '@/types'
+import type { Category, CreateTransactionInput, TransactionWithCategory } from '@/types'
 
 interface AddTransactionSheetProps {
   isOpen: boolean
@@ -12,6 +12,8 @@ interface AddTransactionSheetProps {
   onSubmit: (data: CreateTransactionInput) => Promise<void>
   categories: Category[]
   onAddCategory: (name: string, type: 'income' | 'expense', color: string) => Promise<void>
+  editingTransaction?: TransactionWithCategory | null
+  onUpdate?: (id: number, data: CreateTransactionInput) => Promise<void>
 }
 
 const COLORS = ['#FACC15', '#60A5FA', '#4ADE80', '#F87171', '#C084FC', '#FB923C']
@@ -22,6 +24,8 @@ export default function AddTransactionSheet({
   onSubmit,
   categories,
   onAddCategory,
+  editingTransaction,
+  onUpdate,
 }: AddTransactionSheetProps) {
   const [type, setType] = useState<'income' | 'expense'>('expense')
   const [amount, setAmount] = useState('')
@@ -32,6 +36,7 @@ export default function AddTransactionSheet({
   const [newCatName, setNewCatName] = useState('')
   const [newCatColor, setNewCatColor] = useState('#FACC15')
 
+  const isEditing = !!editingTransaction
   const filteredCategories = categories.filter(c => c.type === type)
 
   useEffect(() => {
@@ -42,6 +47,19 @@ export default function AddTransactionSheet({
     }
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
+
+  // Pre-fill form when editing
+  useEffect(() => {
+    if (editingTransaction && isOpen) {
+      setType(editingTransaction.type)
+      setAmount(`Rp ${editingTransaction.amount.toLocaleString('id-ID')}`)
+      setCategoryId(editingTransaction.categoryId)
+      setDescription(editingTransaction.description ?? '')
+      setShowNewCat(false)
+    } else if (!isOpen) {
+      resetForm()
+    }
+  }, [editingTransaction, isOpen])
 
   const resetForm = () => {
     setAmount('')
@@ -59,13 +77,23 @@ export default function AddTransactionSheet({
 
     setLoading(true)
     try {
-      await onSubmit({
-        amount: numAmount,
-        type,
-        categoryId,
-        description: description || undefined,
-        date: Math.floor(Date.now() / 1000),
-      })
+      if (isEditing && onUpdate) {
+        await onUpdate(editingTransaction!.id, {
+          amount: numAmount,
+          type,
+          categoryId,
+          description: description || undefined,
+          date: editingTransaction!.date,
+        })
+      } else {
+        await onSubmit({
+          amount: numAmount,
+          type,
+          categoryId,
+          description: description || undefined,
+          date: Math.floor(Date.now() / 1000),
+        })
+      }
       resetForm()
       onClose()
     } catch {
@@ -100,7 +128,7 @@ export default function AddTransactionSheet({
         <div className="px-4 pb-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-extrabold">Tambah Transaksi</h2>
+            <h2 className="text-lg font-extrabold">{isEditing ? 'Edit Transaksi' : 'Tambah Transaksi'}</h2>
             <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center border-2 border-black hover:bg-gray-100"
@@ -226,7 +254,7 @@ export default function AddTransactionSheet({
               size="full"
               disabled={loading || !amount || Number(amount.replace(/[^0-9]/g, '')) <= 0}
             >
-              {loading ? 'Menyimpan...' : 'SAVE'}
+              {loading ? 'Menyimpan...' : isEditing ? 'UPDATE' : 'SAVE'}
             </Button>
           </form>
         </div>

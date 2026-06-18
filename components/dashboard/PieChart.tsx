@@ -52,8 +52,13 @@ export default function PieChartView({ data, onSliceClick }: PieChartProps) {
               borderRadius: 0,
               color: '#fff',
               fontSize: 12,
+              padding: '8px 12px',
             }}
-            formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, '']}
+            formatter={(value: number, name: string) => [
+              `Rp ${value.toLocaleString('id-ID')}`,
+              name,
+            ]}
+            labelStyle={{ color: '#fff', fontWeight: 'bold' }}
           />
           <Legend
             wrapperStyle={{ fontSize: 12 }}

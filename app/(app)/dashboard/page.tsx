@@ -23,12 +23,14 @@ const PERIOD_LABELS: Record<string, string> = {
 }
 
 export default function DashboardPage() {
-  const { transactions, addTransaction, deleteTransaction } = useTransactions()
+  const { transactions, addTransaction, updateTransaction, deleteTransaction } = useTransactions()
   const { categories, addCategory } = useCategories()
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [editingTransaction, setEditingTransaction] = useState<TransactionWithCategory | null>(null)
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [period, setPeriod] = useState('30days')
+  const [customRange, setCustomRange] = useState({ from: '', to: '' })
   const [toast, setToast] = useState<{
     message: string
     action?: { label: string; onClick: () => void }
@@ -36,8 +38,13 @@ export default function DashboardPage() {
 
   // Filter by period
   const periodTransactions = useMemo(() => {
+    if (period === 'custom' && customRange.from && customRange.to) {
+      const fromTs = Math.floor(new Date(customRange.from + 'T00:00:00').getTime() / 1000)
+      const toTs = Math.floor(new Date(customRange.to + 'T23:59:59').getTime() / 1000)
+      return filterByPeriod(transactions, 'custom', { from: fromTs, to: toTs })
+    }
     return filterByPeriod(transactions, period as 'today' | 'yesterday' | '7days' | '30days')
-  }, [transactions, period])
+  }, [transactions, period, customRange])
 
   // Filter by search and category
   const filteredTransactions = useMemo(() => {
@@ -116,6 +123,17 @@ export default function DashboardPage() {
     setTimeout(() => setToast(null), 3000)
   }
 
+  const handleEdit = (transaction: TransactionWithCategory) => {
+    setEditingTransaction(transaction)
+    setSheetOpen(true)
+  }
+
+  const handleUpdate = async (id: number, data: CreateTransactionInput) => {
+    await updateTransaction(id, data)
+    setToast({ message: 'Transaksi diperbarui!' })
+    setTimeout(() => setToast(null), 3000)
+  }
+
   const handleDelete = (id: number) => {
     const deleted = transactions.find(t => t.id === id)
     deleteTransaction(id)
@@ -170,12 +188,14 @@ export default function DashboardPage() {
         onCategoryChange={setSelectedCategory}
         period={period}
         onPeriodChange={setPeriod}
+        customRange={customRange}
+        onCustomRangeChange={setCustomRange}
       />
 
       {/* Transaction Table */}
       <TransactionTable
         transactions={filteredTransactions}
-        onEdit={() => {}}
+        onEdit={handleEdit}
         onDelete={handleDelete}
       />
 
@@ -191,12 +211,14 @@ export default function DashboardPage() {
       {/* Add Transaction Sheet */}
       <AddTransactionSheet
         isOpen={sheetOpen}
-        onClose={() => setSheetOpen(false)}
+        onClose={() => { setSheetOpen(false); setEditingTransaction(null) }}
         onSubmit={handleAdd}
         categories={categories}
         onAddCategory={async (name, type, color) => {
           return await addCategory({ name, type, color })
         }}
+        editingTransaction={editingTransaction}
+        onUpdate={handleUpdate}
       />
 
       {/* Toast */}

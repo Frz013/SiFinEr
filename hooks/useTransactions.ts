@@ -79,6 +79,9 @@ export function useTransactions() {
         body: JSON.stringify(input),
       })
       if (!res.ok) throw new Error('Failed to update transaction')
+      const updated = await res.json()
+      setTransactions(list => list.map(t => t.id === id ? updated : t))
+      return updated
     } catch (err) {
       if (original) {
         setTransactions(list => list.map(t => t.id === id ? original : t))
